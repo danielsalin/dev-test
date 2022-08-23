@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,8 +31,25 @@ namespace StringPerformanceTest
         [Benchmark]
         public int CountOccurrences()
         {
-            
+            string[] words;
+            int count = 0;
+            string lowCaseSearchValue = SearchValue.ToLower();  /*Convert search word to lower case to identify all occurances*/
+
+            foreach (var line in Lines) /*Parse the text line by line*/
+            {
+                string editedLine = new string(line.Where(c => !char.IsPunctuation(c)).ToArray());  /*Remove punctuation from the line*/
+                words = editedLine.Split(' ');  /*Split the line into words*/
+                foreach (string word in words)  /*Parse the line word by word*/
+                {
+                    if (word.ToLower() == lowCaseSearchValue)   /*Convert the word to lower case so that all occurances are identified*/
+                    {
+                        count++;
+                    }
+                } 
+            }
+            return count;
         }
+
     }
 
     public class Program
